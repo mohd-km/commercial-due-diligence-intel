@@ -1,4 +1,9 @@
-import { classifyMoatTier, formatCurrency, formatNumber } from '../engine/analytics.js';
+import {
+  classifyMoatTier,
+  formatCurrency,
+  formatNumber,
+  getEditorialCorridorColor,
+} from '../engine/analytics.js';
 
 function escapeHtml(str) {
   return String(str)
@@ -38,7 +43,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
     { key: 'segment', label: 'Segment', align: 'left' },
     { key: 'price', label: market.priceUnitLabel, align: 'right' },
     { key: 'rating', label: 'Rating', align: 'right' },
-    { key: 'reviews', label: 'Modelled Reviews', align: 'right' },
+    { key: 'reviews', label: 'Reviews', align: 'right' },
     { key: 'densityIndex', label: 'Density', align: 'right' },
     { key: 'utilizationPct', label: 'Util %', align: 'right' },
     { key: 'capacity', label: market.capacityLabel, align: 'right' },
@@ -50,7 +55,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
       const tier = classifyMoatTier(v.reviews, sharePct);
       const isSelected = v.id === selectedVenueId;
       const corridorObj = market.corridors.find((c) => c.id === v.corridor);
-      const color = corridorObj ? corridorObj.color : '#94a3b8';
+      const color = corridorObj ? getEditorialCorridorColor(corridorObj.color) : '#475569';
 
       return `
         <tr class="reg-row ${isSelected ? 'is-selected' : ''}" data-venue-id="${escapeHtml(v.id)}">
@@ -62,7 +67,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
           <td data-label="Segment" class="muted">${escapeHtml(v.segment)}</td>
           <td data-label="${escapeHtml(market.priceUnitLabel)}" class="num mono">${formatCurrency(v.price, market)}</td>
           <td data-label="Rating" class="num mono">${v.rating.toFixed(1)}</td>
-          <td data-label="Modelled Reviews" class="num mono">
+          <td data-label="Reviews" class="num mono">
             <span>${formatNumber(v.reviews)}</span>
             <span class="moat-tier badge-${tier.toLowerCase()} inline-tier">${tier.toUpperCase()}</span>
           </td>
@@ -75,7 +80,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
 
   container.innerHTML = `
     <div class="registry-toolbar">
-      <div class="registry-count mono">Showing ${sorted.length} of ${venues.length} anonymized benchmark operators</div>
+      <div class="registry-count mono">${sorted.length} of ${venues.length} anonymized operators</div>
       <div class="registry-controls">
         <select id="registry-mobile-sort" class="select-control mobile-sort-select" aria-label="Sort operators">
           ${headers
@@ -89,7 +94,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
           type="search"
           id="registry-search"
           class="search-input"
-          placeholder="Filter by operator, corridor, segment..."
+          placeholder="Filter operator, corridor, segment..."
           value="${escapeHtml(searchQuery)}"
         />
       </div>

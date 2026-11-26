@@ -1,5 +1,16 @@
-// Deterministic Commercial Due-Diligence Analytics & PE Memo Engine
+// Deterministic Commercial Due-Diligence Analytics, Store Pro-Forma & PE Memo Engine
 // 100% client-side computation, zero runtime API calls, zero emojis.
+
+// Editorial restrained corridor palette mapped onto light paper surfaces
+const EDITORIAL_COLOR_MAP = {
+  '#10b981': '#1b5e43', // deep forest green (priority / domain accent)
+  '#f59e0b': '#b45309', // muted ochre / burnt amber
+  '#64748b': '#475569', // editorial slate
+};
+
+export function getEditorialCorridorColor(rawColor) {
+  return EDITORIAL_COLOR_MAP[rawColor] || rawColor || '#475569';
+}
 
 export function percentile(sortedValues, p) {
   if (!sortedValues.length) return 0;
@@ -33,21 +44,27 @@ export function formatNumber(val, decimals = 0) {
 
 export function formatCompact(val) {
   if (!Number.isFinite(val)) return '0';
+  const sign = val < 0 ? '-' : '';
   const abs = Math.abs(val);
-  if (abs >= 1e9) return `${(val / 1e9).toFixed(2)}B`;
-  if (abs >= 1e6) return `${(val / 1e6).toFixed(2)}M`;
-  if (abs >= 1e3) return `${(val / 1e3).toFixed(1)}K`;
-  return formatNumber(val, 0);
+  if (abs >= 1e9) return `${sign}${(abs / 1e9).toFixed(2)}B`;
+  if (abs >= 1e6) return `${sign}${(abs / 1e6).toFixed(2)}M`;
+  if (abs >= 1e3) return `${sign}${(abs / 1e3).toFixed(1)}K`;
+  return `${sign}${formatNumber(abs, 0)}`;
 }
 
 export function formatCurrency(val, market, compact = false) {
-  const numStr = compact ? formatCompact(val) : formatNumber(Math.round(val), 0);
-  return `${market.currency} ${numStr}`;
+  if (!Number.isFinite(val)) return `${market.currency} 0`;
+  const sign = val < 0 ? '-' : '';
+  const abs = Math.abs(val);
+  const numStr = compact ? formatCompact(abs) : formatNumber(Math.round(abs), 0);
+  return `${sign}${market.currency} ${numStr}`;
 }
 
 export function formatUsd(localVal, fxToUsd, compact = true) {
   const usd = localVal * fxToUsd;
-  return compact ? `USD ${formatCompact(usd)}` : `USD ${formatNumber(usd, 0)}`;
+  const sign = usd < 0 ? '-' : '';
+  const abs = Math.abs(usd);
+  return compact ? `${sign}USD ${formatCompact(abs)}` : `${sign}USD ${formatNumber(abs, 0)}`;
 }
 
 export function classifyMoatTier(reviews, sharePct) {
@@ -183,18 +200,18 @@ export function computeCorridorWhiteSpace(market) {
     const demandScore = Math.round(corridor.demandProxyIndex);
     const supplyGapScore = Math.max(8, Math.min(96, Math.round(102 - stats.avgDensity * 0.92)));
     const qualityGapScore = Math.max(18, Math.min(94, Math.round((4.88 - stats.simpleAvgRating) * 115)));
-    const moatOpennessScore = Math.max(10, Math.min(95, Math.round(100 - Math.min(92, (avgReviews / 32)))));
+    const moatOpennessScore = Math.max(10, Math.min(95, Math.round(100 - Math.min(92, avgReviews / 32))));
     const priceHeadroomScore = Math.max(
       24,
-      Math.min(94, Math.round(58 + ((stats.prices.median / marketMedianPrice) - 0.9) * 75))
+      Math.min(94, Math.round(58 + (stats.prices.median / marketMedianPrice - 0.9) * 75))
     );
 
     const whiteSpaceScore = Math.round(
       demandScore * 0.28 +
-      supplyGapScore * 0.34 +
-      qualityGapScore * 0.14 +
-      moatOpennessScore * 0.16 +
-      priceHeadroomScore * 0.08
+        supplyGapScore * 0.34 +
+        qualityGapScore * 0.14 +
+        moatOpennessScore * 0.16 +
+        priceHeadroomScore * 0.08
     );
 
     let posture = 'SATURATED / AVOID';
@@ -233,12 +250,250 @@ export function computeCorridorWhiteSpace(market) {
   return rows.sort((a, b) => b.whiteSpaceScore - a.whiteSpaceScore);
 }
 
-export function computeInvestmentMemo(market, activeCorridor = 'ALL') {
+// =========================================================================
+// INTERACTIVE STORE PRO-FORMA ENGINE (100% deterministic, client-side)
+// =========================================================================
+
+const PRO_FORMA_SPEC = {
+  'bengaluru-coffee': {
+    areaSqft: 1100,
+    rentIsAnnual: false,
+    revenueMultiplier: 30, // days/month
+    maxUnits: 212, // max daily covers at 100% utilization
+    baseUtilPct: 78,
+    unitLabel: 'covers / day',
+    unitShort: 'covers/day',
+    rentRange: { min: 90, max: 340, step: 5 },
+    ticketRange: { min: 260, max: 680, step: 10 },
+  },
+  'dubai-hospitality': {
+    areaSqft: 27000,
+    rentIsAnnual: true,
+    revenueMultiplier: 30, // nights/month
+    maxUnits: 45, // total keys
+    baseUtilPct: 80,
+    unitLabel: 'keys / night',
+    unitShort: 'keys/night',
+    rentRange: { min: 100, max: 280, step: 5 },
+    ticketRange: { min: 650, max: 1950, step: 20 },
+  },
+  'london-coworking': {
+    areaSqft: 22000,
+    rentIsAnnual: true,
+    revenueMultiplier: 1, // monthly desk rate
+    maxUnits: 360, // total desks
+    baseUtilPct: 85,
+    unitLabel: 'occupied desks',
+    unitShort: 'desks',
+    rentRange: { min: 35, max: 140, step: 2 },
+    ticketRange: { min: 450, max: 1200, step: 15 },
+  },
+};
+
+export function getProFormaSpec(market) {
+  return PRO_FORMA_SPEC[market.id] || PRO_FORMA_SPEC['bengaluru-coffee'];
+}
+
+export function getProFormaDefaults(market, corridorId = null) {
+  const spec = getProFormaSpec(market);
+  const corridorScores = computeCorridorWhiteSpace(market);
+  const targetRow = corridorId
+    ? corridorScores.find((c) => c.corridor.id === corridorId) || corridorScores[0]
+    : corridorScores[0];
+
+  return {
+    corridorId: targetRow.corridor.id,
+    rentPerSqft: targetRow.corridor.primeRentPerSqft,
+    avgTicket: market.unitEconomics.avgTicketLocal,
+    utilizationPct: spec.baseUtilPct,
+    landlordCapexPct: 0,
+  };
+}
+
+function computeFiveYearIrr(capex, annualEbitda) {
+  if (capex <= 0) return annualEbitda > 0 ? 120 : 0;
+  if (annualEbitda <= 0) return -100;
+  // Solve NPV(r) = -capex + sum_{t=1..5} annualEbitda / (1 + r)^t = 0 via bisection
+  let lo = -0.65;
+  let hi = 2.5;
+  const npv = (r) => {
+    let val = -capex;
+    for (let t = 1; t <= 5; t += 1) {
+      val += annualEbitda / (1 + r) ** t;
+    }
+    return val;
+  };
+  if (npv(hi) > 0) return hi * 100;
+  if (npv(lo) < 0) return -65;
+  for (let i = 0; i < 40; i += 1) {
+    const mid = (lo + hi) / 2;
+    if (npv(mid) > 0) lo = mid;
+    else hi = mid;
+  }
+  return ((lo + hi) / 2) * 100;
+}
+
+export function computeStoreProForma(market, params) {
+  const spec = getProFormaSpec(market);
+  const ue = market.unitEconomics;
+  const corridorScores = computeCorridorWhiteSpace(market);
+  const corridorRow =
+    corridorScores.find((c) => c.corridor.id === params.corridorId) || corridorScores[0];
+
+  const rentPerSqft = Number(params.rentPerSqft);
+  const avgTicket = Number(params.avgTicket);
+  const utilizationPct = Number(params.utilizationPct);
+  const landlordCapexPct = Number(params.landlordCapexPct || 0);
+
+  const activeUnits = Math.round((spec.maxUnits * utilizationPct) / 100);
+  const monthlyRevenue = activeUnits * avgTicket * spec.revenueMultiplier;
+
+  const grossMarginFrac = ue.grossMarginPct / 100;
+  const monthlyCogs = monthlyRevenue * (1 - grossMarginFrac);
+  const monthlyGrossProfit = monthlyRevenue - monthlyCogs;
+
+  const monthlyRent = spec.rentIsAnnual
+    ? (rentPerSqft * spec.areaSqft) / 12
+    : rentPerSqft * spec.areaSqft;
+
+  // Fixed store staffing and baseline site overhead anchored to format size
+  const monthlyLabor = ue.monthlyRevenueLocal * (ue.laborToRevPct / 100);
+  const monthlyOtherOpex = ue.monthlyRevenueLocal * (ue.otherOpexPct / 100);
+  const totalFixedCosts = monthlyRent + monthlyLabor + monthlyOtherOpex;
+
+  const monthlyEbitda = monthlyGrossProfit - totalFixedCosts;
+  const annualEbitda = monthlyEbitda * 12;
+
+  const siteEbitdaMarginPct = monthlyRevenue > 0 ? (monthlyEbitda / monthlyRevenue) * 100 : 0;
+  const rentToRevPct = monthlyRevenue > 0 ? (monthlyRent / monthlyRevenue) * 100 : 0;
+  const laborToRevPct = monthlyRevenue > 0 ? (monthlyLabor / monthlyRevenue) * 100 : 0;
+  const otherOpexPct = monthlyRevenue > 0 ? (monthlyOtherOpex / monthlyRevenue) * 100 : 0;
+
+  const contributionPerUnit = avgTicket * spec.revenueMultiplier * grossMarginFrac;
+  const breakEvenUnits =
+    contributionPerUnit > 0 ? totalFixedCosts / contributionPerUnit : Infinity;
+  const breakEvenUtilPct =
+    Number.isFinite(breakEvenUnits) ? (breakEvenUnits / spec.maxUnits) * 100 : Infinity;
+  const marginOfSafetyPct =
+    activeUnits > 0 && Number.isFinite(breakEvenUnits)
+      ? ((activeUnits - breakEvenUnits) / activeUnits) * 100
+      : -100;
+
+  const effectiveCapex = ue.buildoutCapexLocal * (1 - landlordCapexPct / 100);
+  const paybackMonths = monthlyEbitda > 0 ? effectiveCapex / monthlyEbitda : Infinity;
+  const impliedIrrPct = computeFiveYearIrr(effectiveCapex, annualEbitda);
+
+  // 36-month cumulative cashflow curve (3-month ramp: 55%, 75%, 90%, then 100% steady state)
+  const rampFactors = [0.55, 0.75, 0.9];
+  const cashflowSeries = [{ month: 0, cumulative: -effectiveCapex, monthly: -effectiveCapex }];
+  let cum = -effectiveCapex;
+  let rampedPaybackMonth = null;
+  for (let m = 1; m <= 36; m += 1) {
+    const factor = m <= 3 ? rampFactors[m - 1] : 1;
+    const revM = monthlyRevenue * factor;
+    const gpM = revM * grossMarginFrac;
+    const ebitdaM = gpM - totalFixedCosts;
+    const prevCum = cum;
+    cum += ebitdaM;
+    if (rampedPaybackMonth === null && prevCum < 0 && cum >= 0) {
+      const frac = ebitdaM > 0 ? Math.abs(prevCum) / ebitdaM : 0;
+      rampedPaybackMonth = m - 1 + frac;
+    }
+    cashflowSeries.push({ month: m, cumulative: cum, monthly: ebitdaM });
+  }
+
+  // Dynamic verdict combining corridor white-space score & store unit economics
+  const ws = corridorRow.whiteSpaceScore;
+  let verdictCode = 'CONDITIONAL';
+  let verdictLabel = 'CONDITIONAL / WATCH — CAPEX-GATED';
+  let verdictTone = 'amber';
+  let verdictSummary = '';
+
+  if (monthlyEbitda <= 0 || siteEbitdaMarginPct < 10) {
+    verdictCode = 'PASS';
+    verdictLabel = 'PASS — NEGATIVE / SUB-HURDLE ECONOMICS';
+    verdictTone = 'crimson';
+    verdictSummary = `In ${corridorRow.corridor.label} at ${formatCurrency(avgTicket, market)} and ${utilizationPct}% utilization, site EBITDA margin compresses to ${siteEbitdaMarginPct.toFixed(1)}% (rent-to-revenue ${rentToRevPct.toFixed(1)}%), failing IC return hurdles.`;
+  } else if (ws >= 68 && paybackMonths <= 20 && siteEbitdaMarginPct >= 20) {
+    verdictCode = 'GO';
+    verdictLabel = 'GO — TARGETED CORRIDOR ENTRY';
+    verdictTone = 'emerald';
+    verdictSummary = `${corridorRow.corridor.label} (White-Space ${ws}/100) supports ${paybackMonths.toFixed(1)}-month simple payback and ${siteEbitdaMarginPct.toFixed(1)}% site EBITDA margin with break-even at ${Math.ceil(breakEvenUnits)} ${spec.unitShort} (${breakEvenUtilPct.toFixed(0)}% util).`;
+  } else if (ws >= 52 && paybackMonths <= 30 && siteEbitdaMarginPct >= 14) {
+    verdictCode = 'SELECTIVE GO';
+    verdictLabel = 'SELECTIVE GO — STRUCTURED LEASE';
+    verdictTone = 'emerald';
+    verdictSummary = `${corridorRow.corridor.label} (White-Space ${ws}/100) delivers ${paybackMonths.toFixed(1)}-month payback and ${impliedIrrPct.toFixed(1)}% 5-yr unlevered IRR at ${utilizationPct}% utilization; execute with lease-cap or revenue-share protection.`;
+  } else {
+    verdictCode = 'CONDITIONAL';
+    verdictLabel = 'CONDITIONAL / WATCH — CAPEX-GATED';
+    verdictTone = 'amber';
+    verdictSummary = `In ${corridorRow.corridor.label} (White-Space ${ws}/100), ${paybackMonths.toFixed(1)}-month payback and ${siteEbitdaMarginPct.toFixed(1)}% EBITDA margin require higher utilization, lower rent, or landlord Cat-B capex funding before capital release.`;
+  }
+
+  // Implied hypothetical outlet coordinates for overlay on visual map
+  const hypotheticalOutlet = {
+    name: `Hypothetical Outlet (${corridorRow.corridor.label})`,
+    corridor: corridorRow.corridor.id,
+    densityIndex: Math.round(corridorRow.avgDensity),
+    rating: Number(Math.min(4.85, Math.max(4.4, corridorRow.avgRating + 0.25)).toFixed(2)),
+    price: avgTicket,
+    utilizationPct,
+    reviews: 0,
+  };
+
+  return {
+    spec,
+    params: {
+      corridorId: corridorRow.corridor.id,
+      rentPerSqft,
+      avgTicket,
+      utilizationPct,
+      landlordCapexPct,
+    },
+    corridorRow,
+    activeUnits,
+    monthlyRevenue,
+    monthlyCogs,
+    monthlyGrossProfit,
+    monthlyRent,
+    monthlyLabor,
+    monthlyOtherOpex,
+    totalFixedCosts,
+    monthlyEbitda,
+    annualEbitda,
+    grossMarginPct: ue.grossMarginPct,
+    rentToRevPct,
+    laborToRevPct,
+    otherOpexPct,
+    siteEbitdaMarginPct,
+    breakEvenUnits,
+    breakEvenUtilPct,
+    marginOfSafetyPct,
+    baseCapex: ue.buildoutCapexLocal,
+    effectiveCapex,
+    paybackMonths,
+    rampedPaybackMonth,
+    impliedIrrPct,
+    cashflowSeries,
+    verdict: {
+      code: verdictCode,
+      label: verdictLabel,
+      tone: verdictTone,
+      summary: verdictSummary,
+    },
+    hypotheticalOutlet,
+  };
+}
+
+export function computeInvestmentMemo(market, activeCorridor = 'ALL', proForma = null) {
   const allStats = computeSummaryStats(market.venues);
   const corridorScores = computeCorridorWhiteSpace(market);
-  const recommended = activeCorridor === 'ALL'
-    ? corridorScores[0]
-    : corridorScores.find((c) => c.corridor.id === activeCorridor) || corridorScores[0];
+  const recommended = proForma
+    ? proForma.corridorRow
+    : activeCorridor === 'ALL'
+      ? corridorScores[0]
+      : corridorScores.find((c) => c.corridor.id === activeCorridor) || corridorScores[0];
 
   const saturatedCorridor = corridorScores[corridorScores.length - 1];
 
@@ -250,30 +505,30 @@ export function computeInvestmentMemo(market, activeCorridor = 'ALL') {
   const samLocal = tamLocal * (t.samSharePct / 100);
   const somLocal = samLocal * (t.somShareOfSamPct / 100);
 
-  const ue = market.unitEconomics;
-  const ws = recommended.whiteSpaceScore;
+  const pf = proForma || computeStoreProForma(market, getProFormaDefaults(market, recommended.corridor.id));
 
-  let verdictLabel = 'CONDITIONAL / WATCH — CAPEX-GATED';
-  let verdictCode = 'CONDITIONAL';
-  let verdictTone = 'amber';
-  let verdictSummary = '';
-
-  if (ws >= 72 && ue.paybackMonths <= 20) {
-    verdictLabel = 'GO — TARGETED CORRIDOR ENTRY';
-    verdictCode = 'GO';
-    verdictTone = 'emerald';
-    verdictSummary = `${recommended.corridor.label} scores ${ws}/100 on the Underserved White-Space Index with ${Math.round(recommended.avgDensity)}/100 competitive density (vs. ${Math.round(saturatedCorridor.avgDensity)}/100 in ${saturatedCorridor.corridor.label}) and sub-${Math.ceil(ue.paybackMonths)}-month site payback at ${ue.siteEbitdaMarginPct.toFixed(1)}% steady-state EBITDA margin.`;
-  } else if (ws >= 66 && ue.paybackMonths <= 30) {
-    verdictLabel = 'SELECTIVE GO — STRUCTURED ENTRY';
-    verdictCode = 'SELECTIVE GO';
-    verdictTone = 'emerald';
-    verdictSummary = `${recommended.corridor.label} exhibits a compelling ${ws}/100 White-Space Score driven by low incumbent density (${Math.round(recommended.avgDensity)}/100) and ${recommended.avgUtilization.toFixed(0)}% incumbent utilization, supporting entry provided lease obligations are structured via hybrid management agreements.`;
-  } else {
-    verdictLabel = 'CONDITIONAL / WATCH — CAPEX-GATED';
-    verdictCode = 'CONDITIONAL';
-    verdictTone = 'amber';
-    verdictSummary = `While ${recommended.corridor.label} leads the market at ${ws}/100 White-Space Score, unsubsidized buildout payback (${ue.paybackMonths.toFixed(1)} months) and ${ue.siteEbitdaMarginPct.toFixed(1)}% site EBITDA margin require >=70% landlord Cat-B capex funding before IC capital release.`;
-  }
+  const unitEconomics = {
+    formatName: market.unitEconomics.formatName,
+    avgTicketLocal: pf.params.avgTicket,
+    dailyCovers: pf.activeUnits,
+    unitShort: pf.spec.unitShort,
+    utilizationPct: pf.params.utilizationPct,
+    rentPerSqft: pf.params.rentPerSqft,
+    rentUnit: pf.corridorRow.corridor.rentUnit,
+    monthlyRevenueLocal: pf.monthlyRevenue,
+    grossMarginPct: pf.grossMarginPct,
+    rentToRevPct: pf.rentToRevPct,
+    laborToRevPct: pf.laborToRevPct,
+    otherOpexPct: pf.otherOpexPct,
+    siteEbitdaMarginPct: pf.siteEbitdaMarginPct,
+    monthlyEbitdaLocal: pf.monthlyEbitda,
+    buildoutCapexLocal: pf.effectiveCapex,
+    landlordCapexPct: pf.params.landlordCapexPct,
+    paybackMonths: pf.paybackMonths,
+    breakEvenUnits: pf.breakEvenUnits,
+    breakEvenUtilPct: pf.breakEvenUtilPct,
+    targetIrrPct: pf.impliedIrrPct,
+  };
 
   const memoId = `IC-${market.id.toUpperCase().replace(/-/g, '-')}-2026Q4`;
 
@@ -286,12 +541,8 @@ export function computeInvestmentMemo(market, activeCorridor = 'ALL') {
     corridorScores,
     recommended,
     saturatedCorridor,
-    verdict: {
-      code: verdictCode,
-      label: verdictLabel,
-      tone: verdictTone,
-      summary: verdictSummary,
-    },
+    verdict: pf.verdict,
+    proForma: pf,
     tam: {
       activeUsers,
       annualOccasions,
@@ -302,7 +553,7 @@ export function computeInvestmentMemo(market, activeCorridor = 'ALL') {
       somLocal,
       somUsd: somLocal * market.fxToUsd,
     },
-    unitEconomics: ue,
+    unitEconomics,
     risks: market.risks,
     diligenceChecklist: market.diligenceChecklist,
   };
@@ -312,6 +563,12 @@ export function generateMemoMarkdown(memo) {
   const { market, allStats, corridorScores, recommended, verdict, tam, unitEconomics, risks, diligenceChecklist } = memo;
   const cur = (v, compact = false) => formatCurrency(v, market, compact);
   const usd = (v) => formatUsd(v, market.fxToUsd, true);
+  const paybackStr = Number.isFinite(unitEconomics.paybackMonths)
+    ? `${unitEconomics.paybackMonths.toFixed(1)} months`
+    : 'N/A (EBITDA <= 0)';
+  const beStr = Number.isFinite(unitEconomics.breakEvenUnits)
+    ? `${Math.ceil(unitEconomics.breakEvenUnits)} ${unitEconomics.unitShort} (${unitEconomics.breakEvenUtilPct.toFixed(0)}% util)`
+    : 'N/A';
 
   const corridorRows = corridorScores
     .map(
@@ -332,7 +589,7 @@ export function generateMemoMarkdown(memo) {
 - **Prepared By:** ${memo.preparedBy}
 - **Region / Sector:** ${market.region} | ${market.sector}
 - **Dataset Scope:** ${allStats.count} anonymized benchmark operators (${formatNumber(allStats.totalReviews)} total modelled reviews) | ${memo.date}
-- **Recommended Entry Corridor:** ${recommended.corridor.label} (White-Space Score: ${recommended.whiteSpaceScore}/100)
+- **Target Entry Corridor:** ${recommended.corridor.label} (White-Space Score: ${recommended.whiteSpaceScore}/100)
 - **IC Verdict:** **${verdict.label}**
 
 ---
@@ -341,11 +598,11 @@ export function generateMemoMarkdown(memo) {
 
 ${verdict.summary}
 
-Across the ${allStats.count} benchmarked operators, weighted average rating stands at **${allStats.weightedAvgRating.toFixed(2)} / 5.00** with a median ${market.priceUnitLabel.toLowerCase()} of **${cur(allStats.prices.median)}** (IQR: ${cur(allStats.prices.p25)} – ${cur(allStats.prices.p75)}). Review-volume concentration is elevated (Top-5 incumbent share: **${allStats.top5ReviewSharePct.toFixed(1)}%**, Gini: **${allStats.gini.toFixed(2)}**), penalizing late entrants in saturated corridors while creating outsized returns in underserved micro-markets.
+Across ${allStats.count} anonymized benchmark operators, weighted average rating stands at **${allStats.weightedAvgRating.toFixed(2)} / 5.00** with a median ${market.priceUnitLabel.toLowerCase()} of **${cur(allStats.prices.median)}** (IQR: ${cur(allStats.prices.p25)} – ${cur(allStats.prices.p75)}). Top-5 incumbent review share is **${allStats.top5ReviewSharePct.toFixed(1)}%** (Gini: **${allStats.gini.toFixed(2)}**).
 
 ### Micro-Market White-Space Ranking
 
-| Corridor | Benchmarked Venues | Avg Density | Avg Rating | Median Price | White-Space Score | Entry Posture |
+| Corridor | Venues | Avg Density | Avg Rating | Median Price | White-Space Score | Entry Posture |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
 ${corridorRows}
 
@@ -359,23 +616,23 @@ ${corridorRows}
 | --- | --- | ---: | ---: |
 | **TAM** | ${formatCompact(tam.activeUsers)} active buyers x ${market.tamModel.annualVisitsPerUser} annual occasions @ ${cur(market.tamModel.avgTicketLocal)} | ${cur(tam.tamLocal, true)} | ${usd(tam.tamLocal)} |
 | **SAM** | ${market.tamModel.samSharePct}% serviceable share across target corridors | ${cur(tam.samLocal, true)} | ${usd(tam.samLocal)} |
-| **SOM (Yr 3)** | ${market.tamModel.somShareOfSamPct}% target capture in priority corridor | ${cur(tam.somLocal, true)} | ${usd(tam.somLocal)} |
+| **SOM (Yr 3)** | ${market.tamModel.somShareOfSamPct}% target capture in ${recommended.corridor.label} | ${cur(tam.somLocal, true)} | ${usd(tam.somLocal)} |
 
 ---
 
-## 3. Unit-Economics Benchmark (${unitEconomics.formatName})
+## 3. Store Pro-Forma Unit Economics (${unitEconomics.formatName})
 
-| Metric | Benchmark Value | Notes |
+| Metric | Pro-Forma Value | Notes |
 | --- | ---: | --- |
-| Target ${market.priceUnitLabel} | ${cur(unitEconomics.avgTicketLocal)} | Positioned at upper-mid corridor quartile |
-| Monthly Revenue (Steady State) | ${cur(unitEconomics.monthlyRevenueLocal, true)} (${usd(unitEconomics.monthlyRevenueLocal)}) | ${unitEconomics.dailyCovers} daily units/covers |
+| Target ${market.priceUnitLabel} | ${cur(unitEconomics.avgTicketLocal)} | ${unitEconomics.dailyCovers} ${unitEconomics.unitShort} (${unitEconomics.utilizationPct}% util) |
+| Corridor Prime Rent | ${formatNumber(unitEconomics.rentPerSqft)} ${unitEconomics.rentUnit} | ${unitEconomics.rentToRevPct.toFixed(1)}% of monthly revenue |
+| Monthly Revenue (Steady State) | ${cur(unitEconomics.monthlyRevenueLocal, true)} (${usd(unitEconomics.monthlyRevenueLocal)}) | Client-side interactive pro-forma |
 | Gross Margin | ${unitEconomics.grossMarginPct.toFixed(1)}% | Direct COGS / variable servicing |
-| Rent / Occupancy Cost | ${unitEconomics.rentToRevPct.toFixed(1)}% of rev | Disciplined corridor lease cap |
-| Direct Labor | ${unitEconomics.laborToRevPct.toFixed(1)}% of rev | Lean standardized staffing |
-| Other Site Opex | ${unitEconomics.otherOpexPct.toFixed(1)}% of rev | Utilities, marketing, tech, QA |
-| **Site-Level EBITDA Margin** | **${unitEconomics.siteEbitdaMarginPct.toFixed(1)}%** | **${cur(unitEconomics.monthlyEbitdaLocal, true)} / month** |
-| Initial Buildout Capex | ${cur(unitEconomics.buildoutCapexLocal, true)} (${usd(unitEconomics.buildoutCapexLocal)}) | Turnkey Cat-B + pre-opening |
-| Implied Simple Payback | **${unitEconomics.paybackMonths.toFixed(1)} months** | Target unlevered IRR: **${unitEconomics.targetIrrPct.toFixed(1)}%** |
+| Direct Labor & Other Opex | ${(unitEconomics.laborToRevPct + unitEconomics.otherOpexPct).toFixed(1)}% of rev | ${unitEconomics.laborToRevPct.toFixed(1)}% labor + ${unitEconomics.otherOpexPct.toFixed(1)}% site opex |
+| **Site-Level EBITDA** | **${cur(unitEconomics.monthlyEbitdaLocal, true)} / mo** | **${unitEconomics.siteEbitdaMarginPct.toFixed(1)}% margin** |
+| **Break-Even Volume** | **${beStr}** | Covers fixed rent + staffing + site opex |
+| Net Buildout Capex | ${cur(unitEconomics.buildoutCapexLocal, true)} (${usd(unitEconomics.buildoutCapexLocal)}) | ${unitEconomics.landlordCapexPct}% landlord Cat-B funding |
+| **Implied Simple Payback** | **${paybackStr}** | 5-Yr Unlevered IRR: **${unitEconomics.targetIrrPct.toFixed(1)}%** |
 
 ---
 
