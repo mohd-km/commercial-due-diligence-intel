@@ -92,7 +92,7 @@ export function renderScatterChart(container, venues, market, selectedVenueId, o
 
   container.innerHTML = `
     <div class="svg-wrap">
-      <svg viewBox="0 0 ${width} ${height}" class="chart-svg" role="img" aria-label="Competitive density versus average rating scatter plot">
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" class="chart-svg" role="img" aria-label="Competitive density versus average rating scatter plot">
         <!-- Quadrant subtle highlight for White-Space Opportunity (Low Density, Mod-High Rating) -->
         <rect x="${pad.left}" y="${pad.top}" width="${qx - pad.left}" height="${height - pad.bottom - pad.top}" fill="#10b981" fill-opacity="0.04" />
         ${gridLinesX}
@@ -226,7 +226,7 @@ export function renderHistogramChart(container, venues, market, tooltipApi) {
 
   container.innerHTML = `
     <div class="svg-wrap">
-      <svg viewBox="0 0 ${width} ${height}" class="chart-svg" role="img" aria-label="Pricing dispersion histogram">
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" class="chart-svg" role="img" aria-label="Pricing dispersion histogram">
         ${yGrid}
         ${barsSvg}
         ${markersSvg}

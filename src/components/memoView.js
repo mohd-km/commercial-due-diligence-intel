@@ -67,147 +67,155 @@ export function renderMemoView(container, memo) {
         <section class="memo-section">
           <h3 class="memo-h3">2. TAM / SAM / SOM Proxy Model</h3>
           <p class="memo-footnote">${escapeHtml(market.tamModel.tamNote)}</p>
-          <table class="memo-table">
-            <thead>
-              <tr>
-                <th>Layer</th>
-                <th>Bottom-Up Basis</th>
-                <th class="num">Local (Annual)</th>
-                <th class="num">USD Eq.</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>TAM</strong></td>
-                <td>${formatCompact(tam.activeUsers)} buyers &times; ${market.tamModel.annualVisitsPerUser}x @ ${cur(market.tamModel.avgTicketLocal)}</td>
-                <td class="num mono">${cur(tam.tamLocal, true)}</td>
-                <td class="num mono">${usd(tam.tamLocal)}</td>
-              </tr>
-              <tr>
-                <td><strong>SAM</strong></td>
-                <td>${market.tamModel.samSharePct}% serviceable corridor share</td>
-                <td class="num mono">${cur(tam.samLocal, true)}</td>
-                <td class="num mono">${usd(tam.samLocal)}</td>
-              </tr>
-              <tr class="row-highlight">
-                <td><strong>SOM (Yr 3)</strong></td>
-                <td>${market.tamModel.somShareOfSamPct}% target capture in ${escapeHtml(recommended.corridor.label)}</td>
-                <td class="num mono">${cur(tam.somLocal, true)}</td>
-                <td class="num mono">${usd(tam.somLocal)}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="memo-table-scroll">
+            <table class="memo-table">
+              <thead>
+                <tr>
+                  <th>Layer</th>
+                  <th>Bottom-Up Basis</th>
+                  <th class="num">Local (Annual)</th>
+                  <th class="num">USD Eq.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>TAM</strong></td>
+                  <td>${formatCompact(tam.activeUsers)} buyers &times; ${market.tamModel.annualVisitsPerUser}x @ ${cur(market.tamModel.avgTicketLocal)}</td>
+                  <td class="num mono">${cur(tam.tamLocal, true)}</td>
+                  <td class="num mono">${usd(tam.tamLocal)}</td>
+                </tr>
+                <tr>
+                  <td><strong>SAM</strong></td>
+                  <td>${market.tamModel.samSharePct}% serviceable corridor share</td>
+                  <td class="num mono">${cur(tam.samLocal, true)}</td>
+                  <td class="num mono">${usd(tam.samLocal)}</td>
+                </tr>
+                <tr class="row-highlight">
+                  <td><strong>SOM (Yr 3)</strong></td>
+                  <td>${market.tamModel.somShareOfSamPct}% target capture in ${escapeHtml(recommended.corridor.label)}</td>
+                  <td class="num mono">${cur(tam.somLocal, true)}</td>
+                  <td class="num mono">${usd(tam.somLocal)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <h4 class="memo-h4">Corridor White-Space Ranking</h4>
-          <table class="memo-table">
-            <thead>
-              <tr>
-                <th>Corridor</th>
-                <th class="num">Venues</th>
-                <th class="num">Density</th>
-                <th class="num">Median Price</th>
-                <th class="num">WS Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${corridorScores
-                .map(
-                  (c) => `
-                  <tr class="${c.corridor.id === recommended.corridor.id ? 'row-highlight' : ''}">
-                    <td><strong>${escapeHtml(c.corridor.label)}</strong></td>
-                    <td class="num mono">${c.count}</td>
-                    <td class="num mono">${c.avgDensity.toFixed(0)}/100</td>
-                    <td class="num mono">${cur(c.medianPrice)}</td>
-                    <td class="num mono">${c.whiteSpaceScore}/100</td>
-                  </tr>`
-                )
-                .join('')}
-            </tbody>
-          </table>
+          <div class="memo-table-scroll">
+            <table class="memo-table">
+              <thead>
+                <tr>
+                  <th>Corridor</th>
+                  <th class="num">Venues</th>
+                  <th class="num">Density</th>
+                  <th class="num">Median Price</th>
+                  <th class="num">WS Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${corridorScores
+                  .map(
+                    (c) => `
+                    <tr class="${c.corridor.id === recommended.corridor.id ? 'row-highlight' : ''}">
+                      <td><strong>${escapeHtml(c.corridor.label)}</strong></td>
+                      <td class="num mono">${c.count}</td>
+                      <td class="num mono">${c.avgDensity.toFixed(0)}/100</td>
+                      <td class="num mono">${cur(c.medianPrice)}</td>
+                      <td class="num mono">${c.whiteSpaceScore}/100</td>
+                    </tr>`
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section class="memo-section">
           <h3 class="memo-h3">3. Unit-Economics Benchmark</h3>
           <p class="memo-footnote">Format: ${escapeHtml(unitEconomics.formatName)} (Illustrative synthetic steady-state model)</p>
-          <table class="memo-table">
-            <thead>
-              <tr>
-                <th>Line Item</th>
-                <th class="num">Benchmark</th>
-                <th class="num">% of Rev / Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Target ${escapeHtml(market.priceUnitLabel)}</td>
-                <td class="num mono">${cur(unitEconomics.avgTicketLocal)}</td>
-                <td class="num mono">${unitEconomics.dailyCovers} daily units</td>
-              </tr>
-              <tr>
-                <td>Monthly Revenue</td>
-                <td class="num mono">${cur(unitEconomics.monthlyRevenueLocal, true)}</td>
-                <td class="num mono">${usd(unitEconomics.monthlyRevenueLocal)}</td>
-              </tr>
-              <tr>
-                <td>Gross Profit Margin</td>
-                <td class="num mono">${unitEconomics.grossMarginPct.toFixed(1)}%</td>
-                <td class="num mono">Direct COGS</td>
-              </tr>
-              <tr>
-                <td>Occupancy / Lease Cost</td>
-                <td class="num mono">${unitEconomics.rentToRevPct.toFixed(1)}%</td>
-                <td class="num mono">Target corridor cap</td>
-              </tr>
-              <tr>
-                <td>Direct Labor &amp; Site Opex</td>
-                <td class="num mono">${(unitEconomics.laborToRevPct + unitEconomics.otherOpexPct).toFixed(1)}%</td>
-                <td class="num mono">${unitEconomics.laborToRevPct.toFixed(1)}% + ${unitEconomics.otherOpexPct.toFixed(1)}%</td>
-              </tr>
-              <tr class="row-highlight">
-                <td><strong>Site-Level EBITDA</strong></td>
-                <td class="num mono"><strong>${cur(unitEconomics.monthlyEbitdaLocal, true)}/mo</strong></td>
-                <td class="num mono"><strong>${unitEconomics.siteEbitdaMarginPct.toFixed(1)}% margin</strong></td>
-              </tr>
-              <tr>
-                <td>Initial Buildout Capex</td>
-                <td class="num mono">${cur(unitEconomics.buildoutCapexLocal, true)}</td>
-                <td class="num mono">${usd(unitEconomics.buildoutCapexLocal)}</td>
-              </tr>
-              <tr class="row-highlight">
-                <td><strong>Payback &amp; Unlevered IRR</strong></td>
-                <td class="num mono"><strong>${unitEconomics.paybackMonths.toFixed(1)} months</strong></td>
-                <td class="num mono"><strong>${unitEconomics.targetIrrPct.toFixed(1)}% IRR</strong></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="memo-table-scroll">
+            <table class="memo-table">
+              <thead>
+                <tr>
+                  <th>Line Item</th>
+                  <th class="num">Benchmark</th>
+                  <th class="num">% of Rev / Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Target ${escapeHtml(market.priceUnitLabel)}</td>
+                  <td class="num mono">${cur(unitEconomics.avgTicketLocal)}</td>
+                  <td class="num mono">${unitEconomics.dailyCovers} daily units</td>
+                </tr>
+                <tr>
+                  <td>Monthly Revenue</td>
+                  <td class="num mono">${cur(unitEconomics.monthlyRevenueLocal, true)}</td>
+                  <td class="num mono">${usd(unitEconomics.monthlyRevenueLocal)}</td>
+                </tr>
+                <tr>
+                  <td>Gross Profit Margin</td>
+                  <td class="num mono">${unitEconomics.grossMarginPct.toFixed(1)}%</td>
+                  <td class="num mono">Direct COGS</td>
+                </tr>
+                <tr>
+                  <td>Occupancy / Lease Cost</td>
+                  <td class="num mono">${unitEconomics.rentToRevPct.toFixed(1)}%</td>
+                  <td class="num mono">Target corridor cap</td>
+                </tr>
+                <tr>
+                  <td>Direct Labor &amp; Site Opex</td>
+                  <td class="num mono">${(unitEconomics.laborToRevPct + unitEconomics.otherOpexPct).toFixed(1)}%</td>
+                  <td class="num mono">${unitEconomics.laborToRevPct.toFixed(1)}% + ${unitEconomics.otherOpexPct.toFixed(1)}%</td>
+                </tr>
+                <tr class="row-highlight">
+                  <td><strong>Site-Level EBITDA</strong></td>
+                  <td class="num mono"><strong>${cur(unitEconomics.monthlyEbitdaLocal, true)}/mo</strong></td>
+                  <td class="num mono"><strong>${unitEconomics.siteEbitdaMarginPct.toFixed(1)}% margin</strong></td>
+                </tr>
+                <tr>
+                  <td>Initial Buildout Capex</td>
+                  <td class="num mono">${cur(unitEconomics.buildoutCapexLocal, true)}</td>
+                  <td class="num mono">${usd(unitEconomics.buildoutCapexLocal)}</td>
+                </tr>
+                <tr class="row-highlight">
+                  <td><strong>Payback &amp; Unlevered IRR</strong></td>
+                  <td class="num mono"><strong>${unitEconomics.paybackMonths.toFixed(1)} months</strong></td>
+                  <td class="num mono"><strong>${unitEconomics.targetIrrPct.toFixed(1)}% IRR</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
 
       <section class="memo-section">
         <h3 class="memo-h3">4. Key Entry Risks &amp; Concrete Mitigants</h3>
-        <table class="memo-table">
-          <thead>
-            <tr>
-              <th>Severity</th>
-              <th>Risk Driver</th>
-              <th>Empirical Dataset Signal</th>
-              <th>Mitigant</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${risks
-              .map(
-                (r) => `
-                <tr>
-                  <td><span class="sev-badge sev-${r.severity.toLowerCase()}">${escapeHtml(r.severity)}</span></td>
-                  <td><strong>${escapeHtml(r.driver)}</strong></td>
-                  <td>${escapeHtml(r.signal)}</td>
-                  <td>${escapeHtml(r.mitigant)}</td>
-                </tr>`
-              )
-              .join('')}
-          </tbody>
-        </table>
+        <div class="memo-table-scroll">
+          <table class="memo-table memo-table-risks">
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Risk Driver</th>
+                <th>Empirical Dataset Signal</th>
+                <th>Mitigant</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${risks
+                .map(
+                  (r) => `
+                  <tr>
+                    <td><span class="sev-badge sev-${r.severity.toLowerCase()}">${escapeHtml(r.severity)}</span></td>
+                    <td><strong>${escapeHtml(r.driver)}</strong></td>
+                    <td>${escapeHtml(r.signal)}</td>
+                    <td>${escapeHtml(r.mitigant)}</td>
+                  </tr>`
+                )
+                .join('')}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="memo-section">
