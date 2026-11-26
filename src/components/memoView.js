@@ -24,7 +24,7 @@ export function renderMemoView(container, memo) {
     <div class="memo-toolbar">
       <div class="memo-toolbar-meta">
         <span class="mono memo-id-tag">${escapeHtml(memo.memoId)}</span>
-        <span class="memo-toolbar-sub">1-Page Investment Committee Synthesis &middot; Deterministic Snapshot</span>
+        <span class="memo-toolbar-sub">1-Page Investment Committee Synthesis &middot; Modelled Benchmark</span>
       </div>
       <div class="memo-toolbar-actions">
         <button type="button" class="btn-secondary" id="btn-copy-md">Copy Markdown</button>
@@ -55,7 +55,7 @@ export function renderMemoView(container, memo) {
         <h3 class="memo-h3">1. Executive Thesis &amp; Verdict Rationale</h3>
         <p class="memo-lead">${escapeHtml(verdict.summary)}</p>
         <p class="memo-body">
-          Across <strong>${allStats.count}</strong> benchmarked operators (${formatNumber(allStats.totalReviews)} total public reviews), the market records a review-weighted average rating of
+          Across <strong>${allStats.count}</strong> anonymized benchmark operators (${formatNumber(allStats.totalReviews)} total modelled reviews), the market records a review-weighted average rating of
           <span class="mono">${allStats.weightedAvgRating.toFixed(2)}/5.00</span> and median ${escapeHtml(market.priceUnitLabel.toLowerCase())} of
           <span class="mono">${cur(allStats.prices.median)}</span> (IQR: <span class="mono">${cur(allStats.prices.p25)} – ${cur(allStats.prices.p75)}</span>).
           Review-volume concentration is elevated (Top-5 incumbent share <span class="mono">${allStats.top5ReviewSharePct.toFixed(1)}%</span>, Gini <span class="mono">${allStats.gini.toFixed(2)}</span>),
@@ -79,22 +79,22 @@ export function renderMemoView(container, memo) {
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>TAM</strong></td>
-                  <td>${formatCompact(tam.activeUsers)} buyers &times; ${market.tamModel.annualVisitsPerUser}x @ ${cur(market.tamModel.avgTicketLocal)}</td>
-                  <td class="num mono">${cur(tam.tamLocal, true)}</td>
-                  <td class="num mono">${usd(tam.tamLocal)}</td>
+                  <td data-label="Layer"><strong>TAM</strong></td>
+                  <td data-label="Basis">${formatCompact(tam.activeUsers)} buyers &times; ${market.tamModel.annualVisitsPerUser}x @ ${cur(market.tamModel.avgTicketLocal)}</td>
+                  <td data-label="Local (Annual)" class="num mono">${cur(tam.tamLocal, true)}</td>
+                  <td data-label="USD Eq." class="num mono">${usd(tam.tamLocal)}</td>
                 </tr>
                 <tr>
-                  <td><strong>SAM</strong></td>
-                  <td>${market.tamModel.samSharePct}% serviceable corridor share</td>
-                  <td class="num mono">${cur(tam.samLocal, true)}</td>
-                  <td class="num mono">${usd(tam.samLocal)}</td>
+                  <td data-label="Layer"><strong>SAM</strong></td>
+                  <td data-label="Basis">${market.tamModel.samSharePct}% serviceable corridor share</td>
+                  <td data-label="Local (Annual)" class="num mono">${cur(tam.samLocal, true)}</td>
+                  <td data-label="USD Eq." class="num mono">${usd(tam.samLocal)}</td>
                 </tr>
                 <tr class="row-highlight">
-                  <td><strong>SOM (Yr 3)</strong></td>
-                  <td>${market.tamModel.somShareOfSamPct}% target capture in ${escapeHtml(recommended.corridor.label)}</td>
-                  <td class="num mono">${cur(tam.somLocal, true)}</td>
-                  <td class="num mono">${usd(tam.somLocal)}</td>
+                  <td data-label="Layer"><strong>SOM (Yr 3)</strong></td>
+                  <td data-label="Basis">${market.tamModel.somShareOfSamPct}% target capture in ${escapeHtml(recommended.corridor.label)}</td>
+                  <td data-label="Local (Annual)" class="num mono">${cur(tam.somLocal, true)}</td>
+                  <td data-label="USD Eq." class="num mono">${usd(tam.somLocal)}</td>
                 </tr>
               </tbody>
             </table>
@@ -117,11 +117,11 @@ export function renderMemoView(container, memo) {
                   .map(
                     (c) => `
                     <tr class="${c.corridor.id === recommended.corridor.id ? 'row-highlight' : ''}">
-                      <td><strong>${escapeHtml(c.corridor.label)}</strong></td>
-                      <td class="num mono">${c.count}</td>
-                      <td class="num mono">${c.avgDensity.toFixed(0)}/100</td>
-                      <td class="num mono">${cur(c.medianPrice)}</td>
-                      <td class="num mono">${c.whiteSpaceScore}/100</td>
+                      <td data-label="Corridor"><strong>${escapeHtml(c.corridor.label)}</strong></td>
+                      <td data-label="Venues" class="num mono">${c.count}</td>
+                      <td data-label="Density" class="num mono">${c.avgDensity.toFixed(0)}/100</td>
+                      <td data-label="Median Price" class="num mono">${cur(c.medianPrice)}</td>
+                      <td data-label="WS Score" class="num mono">${c.whiteSpaceScore}/100</td>
                     </tr>`
                   )
                   .join('')}
@@ -144,44 +144,44 @@ export function renderMemoView(container, memo) {
               </thead>
               <tbody>
                 <tr>
-                  <td>Target ${escapeHtml(market.priceUnitLabel)}</td>
-                  <td class="num mono">${cur(unitEconomics.avgTicketLocal)}</td>
-                  <td class="num mono">${unitEconomics.dailyCovers} daily units</td>
+                  <td data-label="Line Item">Target ${escapeHtml(market.priceUnitLabel)}</td>
+                  <td data-label="Benchmark" class="num mono">${cur(unitEconomics.avgTicketLocal)}</td>
+                  <td data-label="Note" class="num mono">${unitEconomics.dailyCovers} daily units</td>
                 </tr>
                 <tr>
-                  <td>Monthly Revenue</td>
-                  <td class="num mono">${cur(unitEconomics.monthlyRevenueLocal, true)}</td>
-                  <td class="num mono">${usd(unitEconomics.monthlyRevenueLocal)}</td>
+                  <td data-label="Line Item">Monthly Revenue</td>
+                  <td data-label="Benchmark" class="num mono">${cur(unitEconomics.monthlyRevenueLocal, true)}</td>
+                  <td data-label="Note" class="num mono">${usd(unitEconomics.monthlyRevenueLocal)}</td>
                 </tr>
                 <tr>
-                  <td>Gross Profit Margin</td>
-                  <td class="num mono">${unitEconomics.grossMarginPct.toFixed(1)}%</td>
-                  <td class="num mono">Direct COGS</td>
+                  <td data-label="Line Item">Gross Profit Margin</td>
+                  <td data-label="Benchmark" class="num mono">${unitEconomics.grossMarginPct.toFixed(1)}%</td>
+                  <td data-label="Note" class="num mono">Direct COGS</td>
                 </tr>
                 <tr>
-                  <td>Occupancy / Lease Cost</td>
-                  <td class="num mono">${unitEconomics.rentToRevPct.toFixed(1)}%</td>
-                  <td class="num mono">Target corridor cap</td>
+                  <td data-label="Line Item">Occupancy / Lease Cost</td>
+                  <td data-label="Benchmark" class="num mono">${unitEconomics.rentToRevPct.toFixed(1)}%</td>
+                  <td data-label="Note" class="num mono">Target corridor cap</td>
                 </tr>
                 <tr>
-                  <td>Direct Labor &amp; Site Opex</td>
-                  <td class="num mono">${(unitEconomics.laborToRevPct + unitEconomics.otherOpexPct).toFixed(1)}%</td>
-                  <td class="num mono">${unitEconomics.laborToRevPct.toFixed(1)}% + ${unitEconomics.otherOpexPct.toFixed(1)}%</td>
+                  <td data-label="Line Item">Direct Labor &amp; Site Opex</td>
+                  <td data-label="Benchmark" class="num mono">${(unitEconomics.laborToRevPct + unitEconomics.otherOpexPct).toFixed(1)}%</td>
+                  <td data-label="Note" class="num mono">${unitEconomics.laborToRevPct.toFixed(1)}% + ${unitEconomics.otherOpexPct.toFixed(1)}%</td>
                 </tr>
                 <tr class="row-highlight">
-                  <td><strong>Site-Level EBITDA</strong></td>
-                  <td class="num mono"><strong>${cur(unitEconomics.monthlyEbitdaLocal, true)}/mo</strong></td>
-                  <td class="num mono"><strong>${unitEconomics.siteEbitdaMarginPct.toFixed(1)}% margin</strong></td>
+                  <td data-label="Line Item"><strong>Site-Level EBITDA</strong></td>
+                  <td data-label="Benchmark" class="num mono"><strong>${cur(unitEconomics.monthlyEbitdaLocal, true)}/mo</strong></td>
+                  <td data-label="Note" class="num mono"><strong>${unitEconomics.siteEbitdaMarginPct.toFixed(1)}% margin</strong></td>
                 </tr>
                 <tr>
-                  <td>Initial Buildout Capex</td>
-                  <td class="num mono">${cur(unitEconomics.buildoutCapexLocal, true)}</td>
-                  <td class="num mono">${usd(unitEconomics.buildoutCapexLocal)}</td>
+                  <td data-label="Line Item">Initial Buildout Capex</td>
+                  <td data-label="Benchmark" class="num mono">${cur(unitEconomics.buildoutCapexLocal, true)}</td>
+                  <td data-label="Note" class="num mono">${usd(unitEconomics.buildoutCapexLocal)}</td>
                 </tr>
                 <tr class="row-highlight">
-                  <td><strong>Payback &amp; Unlevered IRR</strong></td>
-                  <td class="num mono"><strong>${unitEconomics.paybackMonths.toFixed(1)} months</strong></td>
-                  <td class="num mono"><strong>${unitEconomics.targetIrrPct.toFixed(1)}% IRR</strong></td>
+                  <td data-label="Line Item"><strong>Payback &amp; Unlevered IRR</strong></td>
+                  <td data-label="Benchmark" class="num mono"><strong>${unitEconomics.paybackMonths.toFixed(1)} months</strong></td>
+                  <td data-label="Note" class="num mono"><strong>${unitEconomics.targetIrrPct.toFixed(1)}% IRR</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -197,7 +197,7 @@ export function renderMemoView(container, memo) {
               <tr>
                 <th>Severity</th>
                 <th>Risk Driver</th>
-                <th>Empirical Dataset Signal</th>
+                <th>Modelled Dataset Signal</th>
                 <th>Mitigant</th>
               </tr>
             </thead>
@@ -206,10 +206,10 @@ export function renderMemoView(container, memo) {
                 .map(
                   (r) => `
                   <tr>
-                    <td><span class="sev-badge sev-${r.severity.toLowerCase()}">${escapeHtml(r.severity)}</span></td>
-                    <td><strong>${escapeHtml(r.driver)}</strong></td>
-                    <td>${escapeHtml(r.signal)}</td>
-                    <td>${escapeHtml(r.mitigant)}</td>
+                    <td data-label="Severity"><span class="sev-badge sev-${r.severity.toLowerCase()}">${escapeHtml(r.severity)}</span></td>
+                    <td data-label="Risk Driver"><strong>${escapeHtml(r.driver)}</strong></td>
+                    <td data-label="Signal">${escapeHtml(r.signal)}</td>
+                    <td data-label="Mitigant">${escapeHtml(r.mitigant)}</td>
                   </tr>`
                 )
                 .join('')}
@@ -226,8 +226,8 @@ export function renderMemoView(container, memo) {
       </section>
 
       <footer class="memo-sheet-footer">
-        <span>CONFIDENTIAL &middot; SYNTHETIC / PUBLIC BENCHMARK MODEL ONLY</span>
-        <span class="mono">Commercial Due-Diligence &amp; Market Intelligence Engine &middot; Mohammed KM</span>
+        <span>ILLUSTRATIVE BENCHMARK &middot; ANONYMIZED SYNTHETIC MODEL</span>
+        <span class="mono">Commercial Due-Diligence &amp; Market Intelligence &middot; Mohammed KM</span>
       </footer>
     </article>
   `;

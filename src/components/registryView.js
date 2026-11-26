@@ -38,7 +38,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
     { key: 'segment', label: 'Segment', align: 'left' },
     { key: 'price', label: market.priceUnitLabel, align: 'right' },
     { key: 'rating', label: 'Rating', align: 'right' },
-    { key: 'reviews', label: 'Reviews', align: 'right' },
+    { key: 'reviews', label: 'Modelled Reviews', align: 'right' },
     { key: 'densityIndex', label: 'Density', align: 'right' },
     { key: 'utilizationPct', label: 'Util %', align: 'right' },
     { key: 'capacity', label: market.capacityLabel, align: 'right' },
@@ -54,35 +54,45 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
 
       return `
         <tr class="reg-row ${isSelected ? 'is-selected' : ''}" data-venue-id="${escapeHtml(v.id)}">
-          <td>
+          <td class="reg-cell-primary" data-label="Operator">
             <div class="reg-name">${escapeHtml(v.name)}</div>
             <div class="reg-pos">${escapeHtml(v.positioning)}</div>
           </td>
-          <td><span class="corridor-pill"><span class="legend-swatch" style="background:${color}"></span>${escapeHtml(v.corridor)}</span></td>
-          <td class="muted">${escapeHtml(v.segment)}</td>
-          <td class="num mono">${formatCurrency(v.price, market)}</td>
-          <td class="num mono">${v.rating.toFixed(1)}</td>
-          <td class="num mono">
-            ${formatNumber(v.reviews)}
+          <td data-label="Corridor"><span class="corridor-pill"><span class="legend-swatch" style="background:${color}"></span>${escapeHtml(v.corridor)}</span></td>
+          <td data-label="Segment" class="muted">${escapeHtml(v.segment)}</td>
+          <td data-label="${escapeHtml(market.priceUnitLabel)}" class="num mono">${formatCurrency(v.price, market)}</td>
+          <td data-label="Rating" class="num mono">${v.rating.toFixed(1)}</td>
+          <td data-label="Modelled Reviews" class="num mono">
+            <span>${formatNumber(v.reviews)}</span>
             <span class="moat-tier badge-${tier.toLowerCase()} inline-tier">${tier.toUpperCase()}</span>
           </td>
-          <td class="num mono">${v.densityIndex}/100</td>
-          <td class="num mono">${v.utilizationPct}%</td>
-          <td class="num mono">${formatNumber(v.capacity)}</td>
+          <td data-label="Density" class="num mono">${v.densityIndex}/100</td>
+          <td data-label="Util %" class="num mono">${v.utilizationPct}%</td>
+          <td data-label="${escapeHtml(market.capacityLabel)}" class="num mono">${formatNumber(v.capacity)}</td>
         </tr>`;
     })
     .join('');
 
   container.innerHTML = `
     <div class="registry-toolbar">
-      <div class="registry-count mono">Showing ${sorted.length} of ${venues.length} benchmarked competitors</div>
-      <input
-        type="search"
-        id="registry-search"
-        class="search-input"
-        placeholder="Filter by operator, corridor, segment, or positioning..."
-        value="${escapeHtml(searchQuery)}"
-      />
+      <div class="registry-count mono">Showing ${sorted.length} of ${venues.length} anonymized benchmark operators</div>
+      <div class="registry-controls">
+        <select id="registry-mobile-sort" class="select-control mobile-sort-select" aria-label="Sort operators">
+          ${headers
+            .map(
+              (h) =>
+                `<option value="${h.key}" ${sortState.key === h.key ? 'selected' : ''}>Sort: ${escapeHtml(h.label)}</option>`
+            )
+            .join('')}
+        </select>
+        <input
+          type="search"
+          id="registry-search"
+          class="search-input"
+          placeholder="Filter by operator, corridor, segment..."
+          value="${escapeHtml(searchQuery)}"
+        />
+      </div>
     </div>
     <div class="table-scroll">
       <table class="registry-table">
@@ -98,7 +108,7 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
           </tr>
         </thead>
         <tbody>
-          ${rowsHtml || '<tr><td colspan="9" class="empty-cell">No competitors match your query.</td></tr>'}
+          ${rowsHtml || '<tr><td colspan="9" class="empty-cell">No operators match your query.</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -106,10 +116,12 @@ export function renderRegistryView(container, venues, market, sortState, searchQ
 
   const searchInput = container.querySelector('#registry-search');
   searchInput.addEventListener('input', (e) => callbacks.onSearch(e.target.value));
-  // Preserve focus if user was typing
   if (document.activeElement?.id === 'registry-search') {
     searchInput.focus();
   }
+
+  const mobileSort = container.querySelector('#registry-mobile-sort');
+  mobileSort.addEventListener('change', (e) => callbacks.onSort(e.target.value));
 
   container.querySelectorAll('th.sortable').forEach((th) => {
     th.addEventListener('click', () => callbacks.onSort(th.getAttribute('data-sort-key')));

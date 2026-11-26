@@ -100,7 +100,7 @@ function renderInspector(container, market) {
     <div class="inspector-stats">
       <div class="insp-stat"><span>${escapeHtml(market.priceUnitLabel)}</span><strong>${formatCurrency(venue.price, market)}</strong></div>
       <div class="insp-stat"><span>Rating</span><strong>${venue.rating.toFixed(1)} / 5.0</strong></div>
-      <div class="insp-stat"><span>Reviews</span><strong>${formatNumber(venue.reviews)}</strong></div>
+      <div class="insp-stat"><span>Modelled Reviews</span><strong>${formatNumber(venue.reviews)}</strong></div>
       <div class="insp-stat"><span>Density</span><strong>${venue.densityIndex}/100</strong></div>
       <div class="insp-stat"><span>Utilization</span><strong>${venue.utilizationPct}%</strong></div>
       <div class="insp-stat"><span>${escapeHtml(market.capacityLabel)}</span><strong>${formatNumber(venue.capacity)}</strong></div>
@@ -126,10 +126,10 @@ function renderApp() {
   app.innerHTML = `
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <div class="brand-kicker">COMMERCIAL DUE-DILIGENCE &amp; MARKET INTELLIGENCE ENGINE</div>
-          <h1 class="brand-title">Market-Entry Intelligence &amp; Investment Committee Engine</h1>
-          <p class="brand-subtitle">Prepared by <strong>Mohammed KM</strong> &middot; Deterministic Pre-Computed Benchmark Datasets &middot; Zero Runtime Tokens</p>
+        <div class="brand-block">
+          <div class="brand-kicker">COMMERCIAL DUE DILIGENCE</div>
+          <h1 class="brand-title">Market-Entry Benchmarks &amp; IC Memo Engine</h1>
+          <p class="brand-subtitle">Prepared by <strong>Mohammed KM</strong> &middot; Illustrative Commercial Due-Diligence Benchmarks</p>
         </div>
         <nav class="view-nav" aria-label="Primary views">
           <button type="button" class="view-tab ${state.activeView === 'analytics' ? 'is-active' : ''}" data-view="analytics">Market Analytics</button>
@@ -137,6 +137,11 @@ function renderApp() {
           <button type="button" class="view-tab ${state.activeView === 'registry' ? 'is-active' : ''}" data-view="registry">Competitor Registry (${market.venues.length})</button>
         </nav>
       </header>
+
+      <div class="methodology-banner" role="note" aria-label="Methodology notice">
+        <span class="methodology-tag">METHODOLOGY</span>
+        <p class="methodology-text">Operator identities are anonymized. Ratings, modelled review counts, pricing, and utilization figures are synthetic benchmarks constructed for commercial due-diligence illustration.</p>
+      </div>
 
       <section class="control-bar">
         <div class="market-selector-row">
@@ -190,8 +195,8 @@ function renderApp() {
       <section class="kpi-strip" aria-label="Executive metrics">
         <div class="kpi-card">
           <div class="kpi-label">Benchmarked Venues</div>
-          <div class="kpi-value">${stats.count}<span class="muted" style="font-size:13px"> / ${market.venues.length}</span></div>
-          <div class="kpi-sub">${formatNumber(stats.totalReviews)} public reviews</div>
+          <div class="kpi-value">${stats.count}<span class="muted kpi-denom"> / ${market.venues.length}</span></div>
+          <div class="kpi-sub">${formatNumber(stats.totalReviews)} modelled reviews</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Weighted Avg Rating</div>
@@ -220,8 +225,8 @@ function renderApp() {
       <main id="main-stage"></main>
 
       <footer class="app-footer">
-        <span>Commercial Due-Diligence &amp; Market Intelligence Engine &middot; Mohammed KM</span>
-        <span class="mono">100% Public / Synthetic Benchmark Data &middot; Deterministic Client-Side Computation</span>
+        <span>Commercial Due-Diligence &amp; Market Intelligence &middot; Mohammed KM</span>
+        <span class="mono">Anonymized Synthetic Benchmark Data &middot; Client-Side Computation</span>
       </footer>
     </div>
   `;

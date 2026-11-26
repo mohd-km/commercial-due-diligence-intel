@@ -101,13 +101,13 @@ export function renderScatterChart(container, venues, market, selectedVenueId, o
         <line x1="${qx}" y1="${pad.top}" x2="${qx}" y2="${height - pad.bottom}" stroke="#334155" stroke-width="1.1" stroke-dasharray="4 4" />
         <line x1="${pad.left}" y1="${qy}" x2="${width - pad.right}" y2="${qy}" stroke="#334155" stroke-width="1.1" stroke-dasharray="4 4" />
         <!-- Quadrant labels -->
-        <text x="${pad.left + 8}" y="${pad.top + 14}" fill="#10b981" fill-opacity="0.85" font-size="9.5" font-family="var(--font-mono)" letter-spacing="0.06em">UNDERSERVED / LOW DENSITY</text>
-        <text x="${width - pad.right - 8}" y="${pad.top + 14}" fill="#9aa4b8" fill-opacity="0.75" font-size="9.5" font-family="var(--font-mono)" text-anchor="end" letter-spacing="0.06em">ENTRENCHED LEADERS</text>
-        <text x="${pad.left + 8}" y="${height - pad.bottom - 8}" fill="#64748b" fill-opacity="0.8" font-size="9.5" font-family="var(--font-mono)" letter-spacing="0.06em">QUALITY GAP TARGETS</text>
-        <text x="${width - pad.right - 8}" y="${height - pad.bottom - 8}" fill="#f59e0b" fill-opacity="0.75" font-size="9.5" font-family="var(--font-mono)" text-anchor="end" letter-spacing="0.06em">CROWDED COMMODITY</text>
+        <text x="${pad.left + 8}" y="${pad.top + 14}" fill="#10b981" fill-opacity="0.88" font-size="11" font-family="var(--font-mono)" letter-spacing="0.04em">UNDERSERVED / LOW DENSITY</text>
+        <text x="${width - pad.right - 8}" y="${pad.top + 14}" fill="#9aa4b8" fill-opacity="0.8" font-size="11" font-family="var(--font-mono)" text-anchor="end" letter-spacing="0.04em">ENTRENCHED LEADERS</text>
+        <text x="${pad.left + 8}" y="${height - pad.bottom - 8}" fill="#94a3b8" fill-opacity="0.85" font-size="11" font-family="var(--font-mono)" letter-spacing="0.04em">QUALITY GAP TARGETS</text>
+        <text x="${width - pad.right - 8}" y="${height - pad.bottom - 8}" fill="#f59e0b" fill-opacity="0.8" font-size="11" font-family="var(--font-mono)" text-anchor="end" letter-spacing="0.04em">CROWDED COMMODITY</text>
         <!-- Axis titles -->
-        <text x="${pad.left + plotW / 2}" y="${height - 8}" fill="#9aa4b8" font-size="11" font-family="var(--font-sans)" text-anchor="middle">Local Competitive Density Index (0–100, 1km Catchment)</text>
-        <text x="15" y="${pad.top + plotH / 2}" fill="#9aa4b8" font-size="11" font-family="var(--font-sans)" text-anchor="middle" transform="rotate(-90 15 ${pad.top + plotH / 2})">Avg Rating (1.0–5.0)</text>
+        <text x="${pad.left + plotW / 2}" y="${height - 8}" fill="#9aa4b8" font-size="12" font-family="var(--font-sans)" text-anchor="middle">Local Competitive Density Index (0–100, 1km Catchment)</text>
+        <text x="15" y="${pad.top + plotH / 2}" fill="#9aa4b8" font-size="12" font-family="var(--font-sans)" text-anchor="middle" transform="rotate(-90 15 ${pad.top + plotH / 2})">Avg Rating (1.0–5.0)</text>
         <!-- Bubbles -->
         <g class="scatter-layer">${dots}</g>
       </svg>
@@ -138,7 +138,7 @@ export function renderScatterChart(container, venues, market, selectedVenueId, o
            <span>Rating</span><span class="mono">${v.rating.toFixed(1)} / 5.0</span>
            <span>Density</span><span class="mono">${v.densityIndex}/100</span>
            <span>Price</span><span class="mono">${formatCurrency(v.price, market)}</span>
-           <span>Reviews</span><span class="mono">${formatNumber(v.reviews)}</span>
+           <span>Modelled Reviews</span><span class="mono">${formatNumber(v.reviews)}</span>
          </div>`
       );
     });
@@ -319,9 +319,9 @@ export function renderWhiteSpacePanel(container, corridorScores, market, activeC
       const barColor =
         row.whiteSpaceScore >= 70 ? '#10b981' : row.whiteSpaceScore >= 52 ? '#f59e0b' : '#64748b';
       return `
-        <div class="ws-card ${isFocused ? 'is-focused' : ''}" data-corridor-id="${escapeHtml(row.corridor.id)}">
+        <button type="button" class="ws-card ${isFocused ? 'is-focused' : ''}" data-corridor-id="${escapeHtml(row.corridor.id)}">
           <div class="ws-card-head">
-            <div>
+            <div class="ws-card-info">
               <div class="ws-corridor-title">
                 <span class="legend-swatch" style="background:${row.corridor.color}"></span>
                 <span>${escapeHtml(row.corridor.label)}</span>
@@ -347,7 +347,7 @@ export function renderWhiteSpacePanel(container, corridorScores, market, activeC
           </div>
 
           <p class="ws-note">${escapeHtml(row.corridor.notes)}</p>
-        </div>`;
+        </button>`;
     })
     .join('');
 

@@ -1,5 +1,5 @@
-// Synthetic & public-benchmark dataset: Bengaluru Specialty Coffee & Third-Wave Cafes
-// Zero private or proprietary financials; all figures are illustrative market-entry benchmarks.
+// Synthetic benchmark dataset: Bengaluru Specialty Coffee & Third-Wave Cafes
+// All operator identities are anonymized; metrics are modelled benchmarks for commercial due-diligence illustration.
 
 export const bengaluruCoffee = {
   id: 'bengaluru-coffee',
@@ -12,7 +12,7 @@ export const bengaluruCoffee = {
   fxToUsd: 0.0119,
   priceUnitLabel: 'Avg Ticket (2-item basket)',
   capacityLabel: 'Seats',
-  snapshotDate: 'Q4 2026 Benchmark',
+  snapshotDate: 'Q4 2026 Modelled Benchmark',
   corridors: [
     {
       id: 'Indiranagar',
@@ -23,7 +23,7 @@ export const bengaluruCoffee = {
       primeRentPerSqft: 265,
       rentUnit: 'INR / sq ft / mo',
       supplyGrowthYoYPct: 18.4,
-      notes: 'Mature specialty epicenter along 100ft Rd and 12th Main; high customer sophistication but severe lease escalation and review-moat saturation.',
+      notes: 'Mature specialty epicenter along 100ft Rd and 12th Main; high customer sophistication but steep lease escalation and review-moat saturation.',
     },
     {
       id: 'Koramangala',
@@ -45,7 +45,7 @@ export const bengaluruCoffee = {
       primeRentPerSqft: 138,
       rentUnit: 'INR / sq ft / mo',
       supplyGrowthYoYPct: 7.5,
-      notes: 'Massive corporate IT park and North Bengaluru residential catchment (190k+ daily commuters) with acute undersupply of third-wave specialty concepts.',
+      notes: 'Large corporate IT park and North Bengaluru residential catchment (190k+ daily commuters) with clear undersupply of third-wave specialty concepts.',
     },
   ],
   tamModel: {
@@ -83,7 +83,7 @@ export const bengaluruCoffee = {
     {
       severity: 'MEDIUM',
       driver: 'Incumbent Chain Review Moats',
-      signal: 'Top 5 operators control over 42% of total corridor reviews in mature zones, compressing organic discovery.',
+      signal: 'Top 5 operators control over 42% of total corridor modelled reviews in mature zones, compressing organic discovery.',
       mitigant: 'Deploy corporate campus subscription passes and morning pre-order pickup lanes to bypass walk-in discovery friction.',
     },
     {
@@ -106,46 +106,46 @@ export const bengaluruCoffee = {
     'Validate direct-trade green bean supply agreements and 3-store central commissary capacity for viennoiserie.',
   ],
   venues: [
-    // Indiranagar (15 venues - high density, strong moats)
-    { id: 'blr-01', name: 'Araku Coffee Flagship 12th Main', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 560, rating: 4.7, reviews: 4820, densityIndex: 94, capacity: 78, utilizationPct: 86, foundedYear: 2021, positioning: 'Design-led single-origin flagship with high average ticket and tourist draw.' },
-    { id: 'blr-02', name: 'Third Wave Coffee - 100ft Rd', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 420, rating: 4.4, reviews: 5310, densityIndex: 96, capacity: 64, utilizationPct: 82, foundedYear: 2018, positioning: 'High-volume scaled chain anchor with entrenched remote-work traffic.' },
-    { id: 'blr-03', name: 'Blue Tokai Roasters - Indiranagar', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 440, rating: 4.5, reviews: 3890, densityIndex: 92, capacity: 52, utilizationPct: 80, foundedYear: 2019, positioning: 'Trusted specialty brand with strong retail bean attach and bakery partner.' },
-    { id: 'blr-04', name: 'Subko Craft Bakehouse Annex', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 580, rating: 4.6, reviews: 2140, densityIndex: 91, capacity: 44, utilizationPct: 88, foundedYear: 2023, positioning: 'Ultra-premium micro-lot coffee and artisanal sourdough positioning.' },
-    { id: 'blr-05', name: 'Paper & Pie Espresso Bar', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 490, rating: 4.5, reviews: 2680, densityIndex: 89, capacity: 68, utilizationPct: 79, foundedYear: 2022, positioning: 'Work-friendly all-day cafe with meeting pods and elevated brunch menu.' },
-    { id: 'blr-06', name: 'Maverick & Farmer - Ulsoor Edge', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 470, rating: 4.6, reviews: 3120, densityIndex: 82, capacity: 60, utilizationPct: 84, foundedYear: 2020, positioning: 'Estate-owned specialty roaster known for cold-brew innovation.' },
-    { id: 'blr-07', name: 'Humble Bean Indiranagar', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 360, rating: 4.3, reviews: 1420, densityIndex: 93, capacity: 28, utilizationPct: 74, foundedYear: 2021, positioning: 'Compact neighborhood espresso bar competing on speed and weekday regulars.' },
-    { id: 'blr-08', name: 'Nerlu Cafe & Pour-Over Bar', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 410, rating: 4.7, reviews: 1180, densityIndex: 88, capacity: 24, utilizationPct: 81, foundedYear: 2022, positioning: 'Purist manual-brew bar with loyal enthusiast cohort and minimal food menu.' },
-    { id: 'blr-09', name: 'Ainmane Specialty Coorg Bar', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 340, rating: 4.4, reviews: 1650, densityIndex: 90, capacity: 30, utilizationPct: 72, foundedYear: 2019, positioning: 'Heritage Coorg estate retail plus espresso counter.' },
-    { id: 'blr-10', name: 'Matteo Coffea - 100ft Side', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 390, rating: 4.1, reviews: 2890, densityIndex: 95, capacity: 70, utilizationPct: 68, foundedYear: 2016, positioning: 'Legacy early-wave cafe facing rating fatigue against newer roasters.' },
-    { id: 'blr-11', name: 'Kinya Specialty Coffee', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 430, rating: 4.6, reviews: 840, densityIndex: 87, capacity: 22, utilizationPct: 76, foundedYear: 2024, positioning: 'Minimalist Japanese-inspired pour-over and matcha bar.' },
-    { id: 'blr-12', name: 'Beanlore Coffee Roasters', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 450, rating: 4.5, reviews: 1290, densityIndex: 86, capacity: 42, utilizationPct: 75, foundedYear: 2023, positioning: 'Modern Indian specialty roaster with strong weekend brunch mix.' },
-    { id: 'blr-13', name: 'Lavonne Espresso & Patisserie', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 540, rating: 4.6, reviews: 3950, densityIndex: 91, capacity: 58, utilizationPct: 87, foundedYear: 2017, positioning: 'Destination patisserie with high-margin coffee pairing.' },
-    { id: 'blr-14', name: 'Kaapi Reserve 80ft Rd', corridor: 'Indiranagar', segment: 'Cloud-Hybrid', price: 290, rating: 4.0, reviews: 760, densityIndex: 84, capacity: 16, utilizationPct: 64, foundedYear: 2022, positioning: 'Delivery-first filter-espresso hybrid with thin dine-in retention.' },
-    { id: 'blr-15', name: 'Crackle & Roast Micro-Bar', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 380, rating: 4.2, reviews: 520, densityIndex: 92, capacity: 18, utilizationPct: 62, foundedYear: 2024, positioning: 'Recent entrant struggling for visibility amid dense 12th Main cluster.' },
+    // Indiranagar (15 anonymized operators - high density, strong moats)
+    { id: 'blr-01', name: 'Operator A (roastery flagship, 12th Main)', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 560, rating: 4.7, reviews: 4820, densityIndex: 94, capacity: 78, utilizationPct: 86, foundedYear: 2021, positioning: 'Design-led single-origin flagship with high average ticket and destination draw.' },
+    { id: 'blr-02', name: 'Operator B (scaled specialty chain, 100ft Rd)', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 420, rating: 4.4, reviews: 5310, densityIndex: 96, capacity: 64, utilizationPct: 82, foundedYear: 2018, positioning: 'High-volume scaled chain anchor with entrenched remote-work traffic.' },
+    { id: 'blr-03', name: 'Operator C (national roastery chain, Indiranagar)', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 440, rating: 4.5, reviews: 3890, densityIndex: 92, capacity: 52, utilizationPct: 80, foundedYear: 2019, positioning: 'Established specialty roaster with strong retail bean attach and bakery partner.' },
+    { id: 'blr-04', name: 'Operator D (craft bakehouse roaster, 12th Main)', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 580, rating: 4.6, reviews: 2140, densityIndex: 91, capacity: 44, utilizationPct: 88, foundedYear: 2023, positioning: 'Upper-tier micro-lot coffee and artisanal sourdough positioning.' },
+    { id: 'blr-05', name: 'Operator E (work-friendly all-day cafe, 100ft Rd)', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 490, rating: 4.5, reviews: 2680, densityIndex: 89, capacity: 68, utilizationPct: 79, foundedYear: 2022, positioning: 'Work-friendly all-day cafe with meeting pods and elevated brunch menu.' },
+    { id: 'blr-06', name: 'Operator F (estate-owned roastery, Ulsoor Edge)', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 470, rating: 4.6, reviews: 3120, densityIndex: 82, capacity: 60, utilizationPct: 84, foundedYear: 2020, positioning: 'Estate-owned specialty roaster known for cold-brew menu differentiation.' },
+    { id: 'blr-07', name: 'Operator G (neighborhood espresso bar, Defence Colony)', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 360, rating: 4.3, reviews: 1420, densityIndex: 93, capacity: 28, utilizationPct: 74, foundedYear: 2021, positioning: 'Compact neighborhood espresso bar competing on speed and weekday regulars.' },
+    { id: 'blr-08', name: 'Operator H (manual pour-over bar, 12th Main)', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 410, rating: 4.7, reviews: 1180, densityIndex: 88, capacity: 24, utilizationPct: 81, foundedYear: 2022, positioning: 'Purist manual-brew bar with loyal enthusiast cohort and minimal food menu.' },
+    { id: 'blr-09', name: 'Operator I (estate retail espresso counter, 100ft Rd)', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 340, rating: 4.4, reviews: 1650, densityIndex: 90, capacity: 30, utilizationPct: 72, foundedYear: 2019, positioning: 'Heritage Coorg estate retail plus espresso counter.' },
+    { id: 'blr-10', name: 'Operator J (legacy all-day cafe, 100ft Side)', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 390, rating: 4.1, reviews: 2890, densityIndex: 95, capacity: 70, utilizationPct: 68, foundedYear: 2016, positioning: 'Legacy early-wave cafe facing rating fatigue against newer roasters.' },
+    { id: 'blr-11', name: 'Operator K (minimalist pour-over bar, HAL 2nd Stage)', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 430, rating: 4.6, reviews: 840, densityIndex: 87, capacity: 22, utilizationPct: 76, foundedYear: 2024, positioning: 'Minimalist Japanese-inspired pour-over and matcha bar.' },
+    { id: 'blr-12', name: 'Operator L (modern Indian roastery, Indiranagar)', corridor: 'Indiranagar', segment: 'Roastery Flagship', price: 450, rating: 4.5, reviews: 1290, densityIndex: 86, capacity: 42, utilizationPct: 75, foundedYear: 2023, positioning: 'Modern Indian specialty roaster with strong weekend brunch mix.' },
+    { id: 'blr-13', name: 'Operator M (patisserie & espresso cafe, 2nd Stage)', corridor: 'Indiranagar', segment: 'All-Day Cafe', price: 540, rating: 4.6, reviews: 3950, densityIndex: 91, capacity: 58, utilizationPct: 87, foundedYear: 2017, positioning: 'Destination patisserie with high-margin coffee pairing.' },
+    { id: 'blr-14', name: 'Operator N (delivery-first coffee hybrid, 80ft Rd)', corridor: 'Indiranagar', segment: 'Cloud-Hybrid', price: 290, rating: 4.0, reviews: 760, densityIndex: 84, capacity: 16, utilizationPct: 64, foundedYear: 2022, positioning: 'Delivery-first filter-espresso hybrid with thin dine-in retention.' },
+    { id: 'blr-15', name: 'Operator O (micro espresso bar, 12th Main)', corridor: 'Indiranagar', segment: 'Espresso Bar', price: 380, rating: 4.2, reviews: 520, densityIndex: 92, capacity: 18, utilizationPct: 62, foundedYear: 2024, positioning: 'Recent entrant struggling for visibility amid dense 12th Main cluster.' },
 
-    // Koramangala (13 venues - dense, slightly lower median price, strong volume)
-    { id: 'blr-16', name: 'Third Wave Coffee - 4th Block', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 390, rating: 4.4, reviews: 4620, densityIndex: 91, capacity: 72, utilizationPct: 83, foundedYear: 2017, positioning: 'Foundational startup-meeting cafe with deep review moat.' },
-    { id: 'blr-17', name: 'Blue Tokai - Koramangala 6th', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 410, rating: 4.5, reviews: 3240, densityIndex: 89, capacity: 56, utilizationPct: 79, foundedYear: 2019, positioning: 'Consistent specialty anchor drawing founders and remote engineers.' },
-    { id: 'blr-18', name: 'Dyu Art Cafe & Coffee', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 370, rating: 4.5, reviews: 4980, densityIndex: 85, capacity: 84, utilizationPct: 85, foundedYear: 2015, positioning: 'High-dwell courtyard institution; coffee secondary to ambiance.' },
-    { id: 'blr-19', name: 'Hole in the Wall Roastery Bar', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 430, rating: 4.4, reviews: 3560, densityIndex: 88, capacity: 64, utilizationPct: 82, foundedYear: 2018, positioning: 'Heavy weekend breakfast queues with solid espresso program.' },
-    { id: 'blr-20', name: 'Roastery Coffee House South', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 460, rating: 4.6, reviews: 1870, densityIndex: 84, capacity: 62, utilizationPct: 80, foundedYear: 2023, positioning: 'Spacious specialty house winning share with cranberry espresso & food.' },
-    { id: 'blr-21', name: 'Kafeine Lab 5th Block', corridor: 'Koramangala', segment: 'Espresso Bar', price: 350, rating: 4.3, reviews: 980, densityIndex: 90, capacity: 26, utilizationPct: 71, foundedYear: 2022, positioning: 'No-frills specialty bar targeting co-living and student traffic.' },
-    { id: 'blr-22', name: 'Brik Oven & Espresso 80ft', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 480, rating: 4.5, reviews: 2410, densityIndex: 87, capacity: 48, utilizationPct: 78, foundedYear: 2021, positioning: 'Sourdough pizza & morning espresso dual-daypart operator.' },
-    { id: 'blr-23', name: 'Tribe Specialty Brews', corridor: 'Koramangala', segment: 'Espresso Bar', price: 330, rating: 4.2, reviews: 690, densityIndex: 86, capacity: 22, utilizationPct: 67, foundedYear: 2023, positioning: 'Value-priced single-origin espresso kiosk near Sony Signal.' },
-    { id: 'blr-24', name: 'Kalmane Koffees Koramangala', corridor: 'Koramangala', segment: 'Cloud-Hybrid', price: 280, rating: 4.1, reviews: 1120, densityIndex: 83, capacity: 20, utilizationPct: 65, foundedYear: 2020, positioning: 'Traditional Chikmagalur blend transitioning slowly toward specialty.' },
-    { id: 'blr-25', name: 'Cothas Reserve Lab', corridor: 'Koramangala', segment: 'Espresso Bar', price: 310, rating: 4.3, reviews: 1340, densityIndex: 81, capacity: 32, utilizationPct: 73, foundedYear: 2022, positioning: 'Modernized legacy roaster capturing everyday commuter volume.' },
-    { id: 'blr-26', name: 'Savoury & Steep 7th Block', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 420, rating: 4.0, reviews: 870, densityIndex: 88, capacity: 46, utilizationPct: 61, foundedYear: 2021, positioning: 'Inconsistent extraction quality leading to mid-tier rating plateau.' },
-    { id: 'blr-27', name: 'True Black Micro-Roasters', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 510, rating: 4.7, reviews: 1490, densityIndex: 86, capacity: 38, utilizationPct: 84, foundedYear: 2024, positioning: 'High-aesthetic minimalist bar proving premium pricing works in 4th Block.' },
-    { id: 'blr-28', name: 'Slay Coffee Cloud Kitchen', corridor: 'Koramangala', segment: 'Cloud-Hybrid', price: 260, rating: 3.9, reviews: 1580, densityIndex: 79, capacity: 8, utilizationPct: 70, foundedYear: 2020, positioning: 'Aggregator-reliant delivery brand with low brand loyalty.' },
+    // Koramangala (13 anonymized operators - dense, slightly lower median price, strong volume)
+    { id: 'blr-16', name: 'Operator P (scaled specialty chain, 4th Block)', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 390, rating: 4.4, reviews: 4620, densityIndex: 91, capacity: 72, utilizationPct: 83, foundedYear: 2017, positioning: 'Foundational startup-meeting cafe with deep review moat.' },
+    { id: 'blr-17', name: 'Operator Q (national roastery chain, 6th Block)', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 410, rating: 4.5, reviews: 3240, densityIndex: 89, capacity: 56, utilizationPct: 79, foundedYear: 2019, positioning: 'Consistent specialty anchor drawing founders and remote engineers.' },
+    { id: 'blr-18', name: 'Operator R (courtyard art cafe, 5th Block)', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 370, rating: 4.5, reviews: 4980, densityIndex: 85, capacity: 84, utilizationPct: 85, foundedYear: 2015, positioning: 'High-dwell courtyard institution; coffee secondary to ambiance.' },
+    { id: 'blr-19', name: 'Operator S (breakfast & espresso diner, 4th Block)', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 430, rating: 4.4, reviews: 3560, densityIndex: 88, capacity: 64, utilizationPct: 82, foundedYear: 2018, positioning: 'Heavy weekend breakfast queues with solid espresso program.' },
+    { id: 'blr-20', name: 'Operator T (large-format roastery house, South Block)', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 460, rating: 4.6, reviews: 1870, densityIndex: 84, capacity: 62, utilizationPct: 80, foundedYear: 2023, positioning: 'Spacious specialty house winning share with signature cold drinks and food.' },
+    { id: 'blr-21', name: 'Operator U (specialty brew bar, 5th Block)', corridor: 'Koramangala', segment: 'Espresso Bar', price: 350, rating: 4.3, reviews: 980, densityIndex: 90, capacity: 26, utilizationPct: 71, foundedYear: 2022, positioning: 'No-frills specialty bar targeting co-living and student traffic.' },
+    { id: 'blr-22', name: 'Operator V (sourdough & espresso cafe, 80ft Rd)', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 480, rating: 4.5, reviews: 2410, densityIndex: 87, capacity: 48, utilizationPct: 78, foundedYear: 2021, positioning: 'Sourdough pizza and morning espresso dual-daypart operator.' },
+    { id: 'blr-23', name: 'Operator W (value espresso kiosk, Sony Signal)', corridor: 'Koramangala', segment: 'Espresso Bar', price: 330, rating: 4.2, reviews: 690, densityIndex: 86, capacity: 22, utilizationPct: 67, foundedYear: 2023, positioning: 'Value-priced single-origin espresso kiosk near Sony Signal.' },
+    { id: 'blr-24', name: 'Operator X (traditional estate blend outlet, 6th Block)', corridor: 'Koramangala', segment: 'Cloud-Hybrid', price: 280, rating: 4.1, reviews: 1120, densityIndex: 83, capacity: 20, utilizationPct: 65, foundedYear: 2020, positioning: 'Traditional Chikmagalur blend transitioning slowly toward specialty.' },
+    { id: 'blr-25', name: 'Operator Y (modernized legacy roaster, 7th Block)', corridor: 'Koramangala', segment: 'Espresso Bar', price: 310, rating: 4.3, reviews: 1340, densityIndex: 81, capacity: 32, utilizationPct: 73, foundedYear: 2022, positioning: 'Modernized legacy roaster capturing everyday commuter volume.' },
+    { id: 'blr-26', name: 'Operator Z (mid-tier all-day cafe, 7th Block)', corridor: 'Koramangala', segment: 'All-Day Cafe', price: 420, rating: 4.0, reviews: 870, densityIndex: 88, capacity: 46, utilizationPct: 61, foundedYear: 2021, positioning: 'Inconsistent extraction quality leading to mid-tier rating plateau.' },
+    { id: 'blr-27', name: 'Operator AA (minimalist micro-roaster, 4th Block)', corridor: 'Koramangala', segment: 'Roastery Flagship', price: 510, rating: 4.7, reviews: 1490, densityIndex: 86, capacity: 38, utilizationPct: 84, foundedYear: 2024, positioning: 'High-aesthetic minimalist bar proving premium pricing works in 4th Block.' },
+    { id: 'blr-28', name: 'Operator AB (delivery-only cloud coffee, 8th Block)', corridor: 'Koramangala', segment: 'Cloud-Hybrid', price: 260, rating: 3.9, reviews: 1580, densityIndex: 79, capacity: 8, utilizationPct: 70, foundedYear: 2020, positioning: 'Aggregator-reliant delivery brand with low brand loyalty.' },
 
-    // Hebbal / Manyata (8 venues - low density, moderate ratings, clear white space)
-    { id: 'blr-29', name: 'Third Wave Coffee - Manyata', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 410, rating: 4.2, reviews: 1480, densityIndex: 44, capacity: 58, utilizationPct: 91, foundedYear: 2022, positioning: 'Over-utilized lone specialty chain inside tech park; chronic peak queues.' },
-    { id: 'blr-30', name: 'Starbucks Manyata Frontage', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 495, rating: 4.3, reviews: 1920, densityIndex: 46, capacity: 74, utilizationPct: 89, foundedYear: 2021, positioning: 'High-ticket corporate meeting anchor proving strong willingness to pay.' },
-    { id: 'blr-31', name: 'Blue Tokai - Sahakarnagar', corridor: 'Hebbal / Manyata', segment: 'Espresso Bar', price: 400, rating: 4.4, reviews: 740, densityIndex: 38, capacity: 34, utilizationPct: 84, foundedYear: 2023, positioning: 'Strong early traction from North Bengaluru residential base.' },
-    { id: 'blr-32', name: 'Hatti Kaapi Tech Park Kiosk', corridor: 'Hebbal / Manyata', segment: 'Cloud-Hybrid', price: 220, rating: 4.0, reviews: 610, densityIndex: 42, capacity: 12, utilizationPct: 88, foundedYear: 2019, positioning: 'Mass filter-coffee kiosk; zero third-wave overlap.' },
-    { id: 'blr-33', name: 'Northbound Brew & Bake', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 370, rating: 4.1, reviews: 420, densityIndex: 35, capacity: 44, utilizationPct: 72, foundedYear: 2023, positioning: 'Independent cafe with decent ambiance but commercial dark-roast beans.' },
-    { id: 'blr-34', name: 'Bean & Brick Hebbal Ring Rd', corridor: 'Hebbal / Manyata', segment: 'Espresso Bar', price: 340, rating: 3.9, reviews: 290, densityIndex: 33, capacity: 26, utilizationPct: 65, foundedYear: 2022, positioning: 'Weak branding and inconsistent milk texture; vulnerable to quality entrant.' },
-    { id: 'blr-35', name: 'Kaffee Haus Kirloskar Park', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 385, rating: 4.0, reviews: 380, densityIndex: 39, capacity: 40, utilizationPct: 76, foundedYear: 2021, positioning: 'Corporate lobby cafe capturing captive traffic despite mediocre menu.' },
-    { id: 'blr-36', name: 'Roastcraft Express Kempapura', corridor: 'Hebbal / Manyata', segment: 'Cloud-Hybrid', price: 295, rating: 4.2, reviews: 185, densityIndex: 31, capacity: 14, utilizationPct: 70, foundedYear: 2024, positioning: 'Small delivery-heavy outlet confirming unmet specialty demand north of ORR.' },
+    // Hebbal / Manyata (8 anonymized operators - low density, moderate ratings, clear white space)
+    { id: 'blr-29', name: 'Operator AC (scaled specialty chain, Manyata Park)', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 410, rating: 4.2, reviews: 1480, densityIndex: 44, capacity: 58, utilizationPct: 91, foundedYear: 2022, positioning: 'Over-utilized lone specialty chain inside tech park; chronic peak queues.' },
+    { id: 'blr-30', name: 'Operator AD (global coffee chain, Manyata Frontage)', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 495, rating: 4.3, reviews: 1920, densityIndex: 46, capacity: 74, utilizationPct: 89, foundedYear: 2021, positioning: 'High-ticket corporate meeting anchor proving strong willingness to pay.' },
+    { id: 'blr-31', name: 'Operator AE (national roastery chain, Sahakarnagar)', corridor: 'Hebbal / Manyata', segment: 'Espresso Bar', price: 400, rating: 4.4, reviews: 740, densityIndex: 38, capacity: 34, utilizationPct: 84, foundedYear: 2023, positioning: 'Strong early traction from North Bengaluru residential base.' },
+    { id: 'blr-32', name: 'Operator AF (filter-coffee kiosk, Tech Park Gate)', corridor: 'Hebbal / Manyata', segment: 'Cloud-Hybrid', price: 220, rating: 4.0, reviews: 610, densityIndex: 42, capacity: 12, utilizationPct: 88, foundedYear: 2019, positioning: 'Mass filter-coffee kiosk; zero third-wave overlap.' },
+    { id: 'blr-33', name: 'Operator AG (independent cafe & bakery, Hebbal)', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 370, rating: 4.1, reviews: 420, densityIndex: 35, capacity: 44, utilizationPct: 72, foundedYear: 2023, positioning: 'Independent cafe with decent ambiance but commercial dark-roast beans.' },
+    { id: 'blr-34', name: 'Operator AH (neighborhood espresso counter, Ring Rd)', corridor: 'Hebbal / Manyata', segment: 'Espresso Bar', price: 340, rating: 3.9, reviews: 290, densityIndex: 33, capacity: 26, utilizationPct: 65, foundedYear: 2022, positioning: 'Weak branding and inconsistent milk texture; vulnerable to quality entrant.' },
+    { id: 'blr-35', name: 'Operator AI (corporate lobby cafe, Kirloskar Park)', corridor: 'Hebbal / Manyata', segment: 'All-Day Cafe', price: 385, rating: 4.0, reviews: 380, densityIndex: 39, capacity: 40, utilizationPct: 76, foundedYear: 2021, positioning: 'Corporate lobby cafe capturing captive traffic despite mediocre menu.' },
+    { id: 'blr-36', name: 'Operator AJ (delivery-heavy roaster, Kempapura)', corridor: 'Hebbal / Manyata', segment: 'Cloud-Hybrid', price: 295, rating: 4.2, reviews: 185, densityIndex: 31, capacity: 14, utilizationPct: 70, foundedYear: 2024, positioning: 'Small delivery-heavy outlet confirming unmet specialty demand north of ORR.' },
   ],
 };
