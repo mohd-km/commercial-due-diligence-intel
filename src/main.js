@@ -162,7 +162,19 @@ function renderApp() {
             <span>COMMERCIAL DUE DILIGENCE</span>
             <span class="synthetic-pill">ANONYMIZED &middot; SYNTHETIC BENCHMARKS</span>
           </div>
-          <h1 class="brand-title">Market-Entry Visual Map &amp; Store Pro-Forma</h1>
+          <div class="brand-title-row">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 36 36" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.75" y="0.75" width="34.5" height="34.5" rx="7.25" fill="#ffffff" stroke="#111111" stroke-width="1.5" />
+                <line x1="8" y1="26.5" x2="28" y2="26.5" stroke="#111111" stroke-width="1.25" stroke-linecap="round" />
+                <rect x="9.5" y="19" width="3.75" height="7.5" rx="0.75" fill="#111111" />
+                <rect x="16.125" y="14" width="3.75" height="12.5" rx="0.75" fill="#111111" />
+                <rect x="22.75" y="9.5" width="3.75" height="17" rx="0.75" fill="#111111" />
+                <circle cx="11.375" cy="12" r="1.5" fill="#111111" />
+              </svg>
+            </span>
+            <h1 class="brand-title">Market-Entry Visual Map &amp; Store Pro-Forma</h1>
+          </div>
           <p class="brand-subtitle">Mohammed KM &middot; 100% client-side interactive benchmarks across Bengaluru, Dubai &amp; London</p>
         </div>
         <nav class="view-nav" aria-label="Primary views">
